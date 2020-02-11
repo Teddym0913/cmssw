@@ -43,20 +43,24 @@ class MatrixReader(object):
                              'relval_highstats': 'hi-'  ,
                              'relval_pileup': 'PU-'  ,
                              'relval_generator': 'gen-'  ,
+                             'relval_extendedgen': 'genExt-',                             
                              'relval_production': 'prod-'  ,
                              'relval_ged': 'ged-',
                              'relval_upgrade':'upg-',
-                             'relval_identity':'id-'
+                             'relval_identity':'id-',
+                             'relval_machine': 'mach-'
                              }
 
         self.files = ['relval_standard' ,
                       'relval_highstats',
                       'relval_pileup',
                       'relval_generator',
+                      'relval_extendedgen',
                       'relval_production',
                       'relval_ged',
                       'relval_upgrade',
-                      'relval_identity'                      
+                      'relval_identity',
+                      'relval_machine'
                       ]
 
         self.relvalModule = None

@@ -110,6 +110,7 @@ namespace edm {
     int initialNumberOfEventsToSkip_;
     bool noEventSort_;
     bool skipBadFiles_;
+    bool bypassVersionCheck_;
     unsigned int treeCacheSize_;
     int const treeMaxVirtualSize_;
     RunNumber_t setRun_;
@@ -119,6 +120,7 @@ namespace edm {
     bool labelRawDataLikeMC_;
     bool usingGoToEvent_;
     bool enablePrefetching_;
+    bool enforceGUIDInFileName_;
     bool usedFallback_;
   }; // class RootInputFileSequence
 }

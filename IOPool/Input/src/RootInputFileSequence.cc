@@ -56,6 +56,7 @@ namespace edm {
     initialNumberOfEventsToSkip_(inputType == InputType::Primary ? pset.getUntrackedParameter<unsigned int>("skipEvents", 0U) : 0U),
     noEventSort_(inputType == InputType::Primary ? pset.getUntrackedParameter<bool>("noEventSort", true) : false),
     skipBadFiles_(pset.getUntrackedParameter<bool>("skipBadFiles", false)),
+    bypassVersionCheck_(pset.getUntrackedParameter<bool>("bypassVersionCheck", false)),
     treeCacheSize_(noEventSort_ ? pset.getUntrackedParameter<unsigned int>("cacheSize", roottree::defaultCacheSize) : 0U),
     treeMaxVirtualSize_(pset.getUntrackedParameter<int>("treeMaxVirtualSize", -1)),
     setRun_(pset.getUntrackedParameter<unsigned int>("setRunNumber", 0U)),
@@ -65,6 +66,7 @@ namespace edm {
     labelRawDataLikeMC_(pset.getUntrackedParameter<bool>("labelRawDataLikeMC", true)),
     usingGoToEvent_(false),
     enablePrefetching_(false),
+    enforceGUIDInFileName_(pset.getUntrackedParameter<bool>("enforceGUIDInFileName", false)),
     usedFallback_(false) {
 
     // The SiteLocalConfig controls the TTreeCache size and the prefetching settings.
@@ -264,9 +266,11 @@ namespace edm {
           indexesIntoFiles_,
           currentIndexIntoFile,
           orderedProcessHistoryIDs_,
+          bypassVersionCheck_,
           labelRawDataLikeMC_,
           usingGoToEvent_,
-          enablePrefetching_));
+          enablePrefetching_,
+          enforceGUIDInFileName_));
 
       assert(rootFile_);
       fileIterLastOpened_ = fileIter_;
@@ -788,6 +792,9 @@ namespace edm {
     desc.addUntracked<bool>("skipBadFiles", false)
         ->setComment("True:  Ignore any missing or unopenable input file.\n"
                      "False: Throw exception if missing or unopenable input file.");
+    desc.addUntracked<bool>("bypassVersionCheck", false)
+        ->setComment("True:  Bypass release version check.\n"
+                     "False: Throw exception if reading file in a release prior to the release in which the file was written.");
     desc.addUntracked<unsigned int>("cacheSize", roottree::defaultCacheSize)
         ->setComment("Size of ROOT TTree prefetch cache.  Affects performance.");
     desc.addUntracked<int>("treeMaxVirtualSize", -1)
@@ -802,6 +809,10 @@ namespace edm {
                      "'permissive': Branches in each input file may be any subset of those in the first file.");
     desc.addUntracked<bool>("labelRawDataLikeMC", true)
         ->setComment("If True: replace module label for raw data to match MC. Also use 'LHC' as process.");
+    desc.addUntracked<bool>("enforceGUIDInFileName", false)
+      ->setComment(
+            "True:  file name part is required to be equal to the GUID of the file\n"
+            "False: file name can be anything");
 
     ProductSelectorRules::fillDescription(desc, "inputCommands");
     EventSkipperByID::fillDescription(desc);

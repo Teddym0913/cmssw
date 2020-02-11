@@ -1,5 +1,3 @@
-#include "Pythia8/Pythia.h"
-
 class EmissionVetoHook1 : public Pythia8::UserHooks {
 
 public:  
@@ -7,16 +5,18 @@ public:
   // Constructor and destructor.
   EmissionVetoHook1(int nFinalIn, bool vetoOnIn, int vetoCountIn,
                     int pThardModeIn, int pTemtModeIn, int emittedModeIn,
-                    int pTdefModeIn, bool MPIvetoOnIn, int VerbosityIn) :
+                    int pTdefModeIn, bool MPIvetoOnIn, int QEDvetoModeIn,
+                    int nFinalModeIn, int VerbosityIn) :
                     nFinalExt(nFinalIn),
                     vetoOn(vetoOnIn), vetoCount(vetoCountIn),
                     pThardMode(pThardModeIn), pTemtMode(pTemtModeIn),
                     emittedMode(emittedModeIn), pTdefMode(pTdefModeIn),
-                    MPIvetoOn(MPIvetoOnIn), nISRveto(0), nFSRveto(0),
+		    MPIvetoOn(MPIvetoOnIn), QEDvetoMode(QEDvetoModeIn),
+		    nFinalMode(nFinalModeIn), nISRveto(0), nFSRveto(0),
                     Verbosity(VerbosityIn) {}
  ~EmissionVetoHook1() {
-    cout << "Number of ISR vetoed = " << nISRveto << endl;
-    cout << "Number of FSR vetoed = " << nFSRveto << endl;
+    std::cout << "Number of ISR vetoed = " << nISRveto << std::endl;
+    std::cout << "Number of FSR vetoed = " << nFSRveto << std::endl;
   }
 
 //--------------------------------------------------------------------------
@@ -34,7 +34,7 @@ public:
   bool canVetoMPIEmission() { return MPIvetoOn; }
   bool doVetoMPIEmission(int, const Pythia8::Event &e);
 
-  void fatalEmissionVeto(string message);  
+  void fatalEmissionVeto(std::string message);
 
   double pTpythia(const Pythia8::Event &e, int RadAfterBranch,
                   int EmtAfterBranch, int RecAfterBranch, bool FSR);
@@ -47,10 +47,10 @@ public:
 
 private:
   int    nFinalExt, vetoOn, vetoCount, pThardMode, pTemtMode,
-         emittedMode, pTdefMode, MPIvetoOn;
+         emittedMode, pTdefMode, MPIvetoOn, QEDvetoMode, nFinalMode;      
   int    nFinal;
   double pThard, pTMPI;
-  bool   accepted;
+  bool   accepted, isEmt;
   // The number of accepted emissions (in a row)
   int nAcceptSeq;
   // Statistics on vetos

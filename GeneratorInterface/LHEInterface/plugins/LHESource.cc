@@ -64,8 +64,14 @@ void LHESource::nextEvent()
 		return;
         }
 
-	bool newFileOpened = false;
-	partonLevel = reader->next(&newFileOpened);
+        
+        bool newFileOpened;
+	do {
+		newFileOpened = false;
+		partonLevel = reader->next(&newFileOpened);
+	} while (newFileOpened && !partonLevel);
+        
+   
 
 	if (!partonLevel) {
 		return;
@@ -193,6 +199,9 @@ LHESource::readEvent_(edm::EventPrincipal& eventPrincipal) {
 		      partonLevel->weights().end(),
 		      boost::bind(&LHEEventProduct::addWeight,
 				  product.get(), _1));
+        product->setScales(partonLevel->scales());
+        product->setNpLO(partonLevel->npLO());
+        product->setNpNLO(partonLevel->npNLO());
 	std::for_each(partonLevel->getComments().begin(),
 	              partonLevel->getComments().end(),
 	              boost::bind(&LHEEventProduct::addComment,
